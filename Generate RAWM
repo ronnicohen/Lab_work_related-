@@ -1,0 +1,99 @@
+cage_1 = [[1, 1], [1, 2], [1, 3], [1, 4], [1, 5]]
+cage_2 = [[2, 2], [2, 3], [2, 4], [2, 5]]
+cage_3 = [[3, 1], [3, 2], [3, 3], [3, 4], [3, 5]]
+cage_4 = [[4, 1], [4, 2], [4, 3], [4, 5]]
+cage_5 = [[5, 1], [5, 2], [5, 3], [5, 4], [5, 5]]
+cage_6 = [[6, 1], [6, 2], [6, 4]]
+all_round1 = [cage_3, cage_5, cage_6]
+all_round2 = [cage_1, cage_2, cage_4]
+
+
+def randomize_and_shuffle(allie):
+	from random import randint
+	from copy import deepcopy
+
+	all = deepcopy(allie)
+	for i in all:
+		for j in i:
+			j.append(randint(1, 8))
+
+	for i in all:
+		for j in i:
+			bob = randint(1, 2)
+			if bob % 2 == 0:
+				j.append('l')
+			else:
+				j.append('r')
+			if j[3] == 'r':
+				j[3] = j[2] + 5
+				j.append(j[2] + 3)
+				j.append('r')
+			elif j[3] == 'l':
+				j[3] = j[2] + 3
+				j.append(j[2] + 5)
+				j.append('l')
+			else:
+				print 'shit shit shit'
+			if j[3] > 8:
+				j[3] -= 8
+			if j[4] > 8:
+				j[4] -= 8
+
+	from random import shuffle
+
+	for i in all:
+		shuffle(i)
+	shuffle(all)
+	return all
+
+
+def print_results(all):
+	# what is printed is:
+	# [cage number, animal number, start arm, goal arm, distraction arm, arena]
+	print 'Animal ----- Start arm ----- goal arm ----- distraction arm ----- ' \
+		  'Arena'
+	for i in all:
+		for j in i:
+			print str(j[0]) + '--' + str(j[1]) + '             ' + str(
+				j[2]) + '               ' + str(j[
+				3]) + '                 ' + str(j[4]) + '               ' + \
+				  str(
+				j[
+					2]) + str(
+				j[5])
+
+
+def write_results(all, name_of_file,how_many_trials):
+	import xlwt
+
+	with open(r"C:\Users\ronni\Desktop\%s.csv" % (name_of_file), 'w') as file:
+		file.write('Cage, Animal, Start arm, Goal arm, Distraction arm, '
+				   'Arena \n')
+		for i in xrange(1,int(how_many_trials) +1):
+			for i in all:
+				for j in i:
+					file.write(str(j[0]) + ',' + str(j[1]) + ',' + str(j[2]) + ','
+																			   ''
+							   + str(j[3]) + ',' ' ' + ','+ str(j[1]) +
+							   str(j[
+						5]) +
+							   '\n')
+					file.write(str(j[0]) + ',' + str(j[1]) + ',' + str(j[2]) + ','
+																			   ''
+							   + str(j[3]) + ',' + str(j[4]) + ','+ str(j[1]) +
+							   str(j[
+						5]) +
+							   '\n')
+			file.write(
+				'---------------------------------------------------------------\n')
+
+
+def create_days(num_of_days,num_of_trials):
+		num_of_days = int(num_of_days)
+		for i in xrange(0, num_of_days):
+			rs1 = randomize_and_shuffle(all_round1)
+			print_results(rs1)
+			write_results(rs1, 'RAWM plans day_%s' % (i + 1), num_of_trials)
+
+
+create_days(5, 3)
