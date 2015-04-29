@@ -1,0 +1,101 @@
+import xlrd
+import xlwt
+
+# This works not all too badly
+# What it does is to take an excel output of ethovision in which all the
+# animals are randomized in order, and reorganize it
+
+workbook = xlrd.open_workbook(
+	r'C:\Users\ronni\Desktop\New folder (2)\Statistics-ronni exp OPS2 23 4 2015.xlsx')
+sheets = workbook.sheet_names()
+worksheet = workbook.sheet_by_name(sheets[0])
+n_r = worksheet.nrows
+n_c = worksheet.ncols
+
+
+wb = xlwt.Workbook()
+ws = wb.add_sheet('a very nice sheet')
+
+
+ws.write(2, 1, 'Cage')
+ws.write(2, 2, 'Animal')
+ws.write(1, 3, 'Day number')
+ws.write(0, 0, 'Immobile')
+
+xl_r = 3
+xl_c = 1
+
+for cage in xrange(1,7):
+	for animal in xrange(1,6):
+		for row in xrange(4, 30):
+			if int(str(worksheet.cell_value(row, 3))) == cage:
+				if int(str(worksheet.cell_value(row, 2))) == animal:
+					ws.write(xl_r, 1, cage)
+					ws.write(xl_r, 2, animal)
+					ws.write(2, xl_r,xl_c)
+					xl_r += 1
+					xl_c += 1
+
+for day in xrange(1,6):
+	xl_r = 3
+	for cage in xrange(1,7):
+		for animal in xrange(1,6):
+			for row in xrange(4, 134):
+				if float(worksheet.cell_value(row, 0)) == day:
+					if float(str(worksheet.cell_value(row, 3))) == cage:
+						if float(str(worksheet.cell_value(row, 2))) == animal:
+							ws.write(xl_r, day + 2, int(
+							worksheet.cell_value(row, 6)))
+							xl_r += 1
+
+xl_r = 3
+for cage in xrange(1,7):
+	for animal in xrange(1,6):
+		for row in xrange(134, n_r):
+			if float(str(worksheet.cell_value(row, 3))) == cage:
+				if float(str(worksheet.cell_value(row, 2))) == animal:
+					ws.write(xl_r, 8, int(
+					worksheet.cell_value(row, 6)))
+					xl_r += 1
+
+ws.write(33, 1, 'Cage')
+ws.write(33, 2, 'Animal')
+ws.write(32, 3, 'Day number')
+ws.write(30, 0, 'Mobile')
+xl_r = 34
+xl_c = 1
+
+for cage in xrange(1,7):
+	for animal in xrange(1,6):
+		for row in xrange(4, 30):
+			if int(str(worksheet.cell_value(row, 3))) == cage:
+				if int(str(worksheet.cell_value(row, 2))) == animal:
+					ws.write(xl_r, 1, cage)
+					ws.write(xl_r, 2, animal)
+					ws.write(2, xl_r,xl_c)
+					xl_r += 1
+					xl_c += 1
+
+for day in xrange(1,6):
+	xl_r = 34
+	for cage in xrange(1,7):
+		for animal in xrange(1,6):
+			for row in xrange(4, 134):
+				if float(worksheet.cell_value(row, 0)) == day:
+					if float(str(worksheet.cell_value(row, 3))) == cage:
+						if float(str(worksheet.cell_value(row, 2))) == animal:
+							ws.write(xl_r, day + 2, int(
+							worksheet.cell_value(row, 7)))
+							xl_r += 1
+xl_r = 34
+for cage in xrange(1,7):
+	for animal in xrange(1,6):
+		for row in xrange(134, n_r):
+			if float(str(worksheet.cell_value(row, 3))) == cage:
+				if float(str(worksheet.cell_value(row, 2))) == animal:
+					ws.write(xl_r, 8, int(
+					worksheet.cell_value(row, 7)))
+					xl_r += 1
+
+
+wb.save(r"C:\Users\ronni\Desktop\New folder (2)\nice file3.xls")
