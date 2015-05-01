@@ -6,45 +6,66 @@ cage_5 = [[5, 1], [5, 2], [5, 3], [5, 4], [5, 5]]
 cage_6 = [[6, 1], [6, 2], [6, 4]]
 all_round1 = [cage_3, cage_5, cage_6]
 all_round2 = [cage_1, cage_2, cage_4]
+from random import randint
 
 
-def randomize_and_shuffle(allie):
-	from random import randint
+def shuffle_it(allie):
 	from copy import deepcopy
 
-	all = deepcopy(allie)
-	for i in all:
-		for j in i:
-			j.append(randint(1, 8))
-
-	for i in all:
-		for j in i:
-			bob = randint(1, 2)
-			if bob % 2 == 0:
-				j.append('l')
-			else:
-				j.append('r')
-			if j[3] == 'r':
-				j[3] = j[2] + 5
-				j.append(j[2] + 3)
-				j.append('r')
-			elif j[3] == 'l':
-				j[3] = j[2] + 3
-				j.append(j[2] + 5)
-				j.append('l')
-			else:
-				print 'shit shit shit'
-			if j[3] > 8:
-				j[3] -= 8
-			if j[4] > 8:
-				j[4] -= 8
 
 	from random import shuffle
 
-	for i in all:
+	for i in allie:
 		shuffle(i)
-	shuffle(all)
-	return all
+		shuffle(allie)
+	return allie
+
+
+def randomize(round):
+	"""
+
+	:param round:
+	:return:[cage, animal, start arm, goal arm, distraction arm]
+	"""
+	f_start = randint(1,8)
+	bob = 0
+	n_list = round[0] + round[1] + round[2]
+	for i in xrange(0, len(n_list), 2):
+		if bob < len(n_list):
+			n_list[i].append(f_start)
+			goal = f_start + 3
+			if goal > 8:
+				goal -= 8
+			n_list[i].append(goal)
+			distraction = f_start + 5
+			if distraction > 8:
+				distraction -= 8
+			n_list[i].append(distraction)
+			n_list[i].append(str(f_start) + 'l')
+		if i + 1 < len(n_list):
+			start2 = f_start - 2
+			if start2 < 1:
+				start2 = 8 + start2
+			n_list[i + 1].append(start2)
+			goal = f_start + 3
+			if goal > 8:
+				goal -= 8
+			n_list[i + 1].append(goal)
+			n_list[i + 1].append(f_start + 1)
+			arena = f_start - 2
+			if arena < 1:
+				arena += 8
+			n_list[i + 1].append(str(arena) + 'r')
+
+		f_start += 3
+		bob += 2
+		if f_start > 8:
+			f_start -= 8
+	return round
+
+
+
+
 
 
 def print_results(all):
@@ -74,15 +95,10 @@ def write_results(all, name_of_file,how_many_trials):
 				for j in i:
 					file.write(str(j[0]) + ',' + str(j[1]) + ',' + str(j[2]) + ','
 																			   ''
-							   + str(j[3]) + ',' ' ' + ','+ str(j[1]) +
-							   str(j[
-						5]) +
-							   '\n')
+							   + str(j[3]) + ',' + ' ,' +  str(j[5]) + '\n')
 					file.write(str(j[0]) + ',' + str(j[1]) + ',' + str(j[2]) + ','
 																			   ''
-							   + str(j[3]) + ',' + str(j[4]) + ','+ str(j[1]) +
-							   str(j[
-						5]) +
+							   + str(j[3]) + ',' + str(j[4]) + ',' + str(j[5]) +
 							   '\n')
 			file.write(
 				'---------------------------------------------------------------\n')
@@ -91,9 +107,11 @@ def write_results(all, name_of_file,how_many_trials):
 def create_days(num_of_days,num_of_trials):
 		num_of_days = int(num_of_days)
 		for i in xrange(0, num_of_days):
-			rs1 = randomize_and_shuffle(all_round1)
-			print_results(rs1)
-			write_results(rs1, 'RAWM plans day_%s' % (i + 1), num_of_trials)
+			shuffled = shuffle_it(all_round1)
+			randomized = randomize(shuffled)
+
+			print_results(randomized)
+			write_results(randomized, 'RAWM plans day_%s' % (i + 1), num_of_trials)
 
 
 create_days(5, 3)
