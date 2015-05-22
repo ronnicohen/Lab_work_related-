@@ -165,25 +165,18 @@ def write_to_excel(biggie):
 	write_worksheets(day_7, biggie, 7)
 	day_8 = workbook.add_sheet('day_8')
 	write_worksheets(day_8, biggie, 8)
-	workbook.save(r"C:\Users\ronni\Desktop\test\exp. CFD 8 days.xls")
+	workbook.save(r"C:\Users\ronni\Desktop\test\exp. CFD 8 days2.xls")
 
 
 def write_worksheets(sheet, biggie, day):
-	"""
-	This function fills a specific sheet with the appropriate information
-	from the finished list
-	:param sheet: the sheet to be worked on
-	:param biggie: the finished list of animals, cages, conditions and order
-	:param day: the number of test day
-	"""
 	sheet.write(0, 0, 'exp. CFD')
 	sheet.write(2, 1, 'Day: ')
 	sheet.write(2, 2, day)
-	sheet.write(3, 1, 'Date: ')
-	sheet.write(5, 1, 'Cage')
-	sheet.write(5, 2, 'Animal')
-	sheet.write(5, 3, 'Chamber')
-	sheet.write(5, 4, 'Done')
+	sheet.write(2, 5, 'Date: ')
+	sheet.write(3, 1, 'Cage')
+	sheet.write(3, 2, 'Animal')
+	sheet.write(3, 3, 'Chamber')
+	sheet.write(3, 4, 'Done')
 	cages = []
 	animals = []
 	chambers = []
@@ -197,16 +190,35 @@ def write_worksheets(sheet, biggie, day):
 	for i in smalls[day - 1]:
 		for j in i:
 			reversed_chambers.append(j[3])
-	for i in xrange(0, len(cages)):
-		sheet.write(i + 6, 1, cages[i])
-		sheet.write(i + 6, 2, animals[i])
-		sheet.write(i + 6, 3, chambers[i])
-	sheet.write(len(cages) + 6, 0, '--------')
-
-	for i in xrange(len(cages) + 1, (2 * len(cages)) + 1):
-		sheet.write(i + 6, 1, cages[i - (len(cages) + 1)])
-		sheet.write(i + 6, 2, animals[i - (len(cages) + 1)])
-		sheet.write(i + 6, 3, reversed_chambers[i - (len(cages) + 1)])
+	length = len(biggie[day -1][0]) + len(biggie[day - 1][1]) + len(biggie[
+		day - 1][2])
+	cages_a = cages[0:length]
+	cages_b = cages[length:]
+	animals_a = animals[0:length]
+	animals_b = animals[length:]
+	chambers_a = chambers[0:length]
+	chambers_b = chambers[length:]
+	reversed_chambers_a = reversed_chambers[0:length]
+	reversed_chambers_b = reversed_chambers[length:]
+	for i in xrange(0, len(cages_a)):
+		sheet.write(i + 4, 1, cages_a[i])
+		sheet.write(i + length + 4, 1, cages_a[i])
+		sheet.write(i + 4, 2, animals_a[i])
+		sheet.write(i + length + 4, 2, animals_a[i])
+		sheet.write(i + 4, 3, chambers_a[i])
+		sheet.write(i + length + 4, 3, reversed_chambers_a[i])
+	sheet.write(len(cages_a) + 4, 0, 'No shock')
+	sheet.write(len(cages_a * 2) + 4, 0, 'Round 2')
+	for i in xrange(0, len(cages_b)):
+		x = i + (3 * length) + 4
+		y = i + (2 * length) + 4
+		sheet.write(i + (2 * length) + 4, 1, cages_b[i])
+		sheet.write(i + (2 * length) + 4 + len(cages_b), 1, cages_b[i])
+		sheet.write(i + (2 * length) + 4, 2, animals_b[i])
+		sheet.write(i + (2 * length) + 4 + len(cages_b), 2, animals_b[i])
+		sheet.write(i + (2 * length) + 4, 3, chambers_b[i])
+		sheet.write(i + (2 * length) + 4 + len(cages_b), 3, reversed_chambers_b[i])
+	sheet.write(len(cages_a * 2) + len(cages_b) + 4, 0, 'No shock')
 
 
 def reverse_chambers(biggie):
