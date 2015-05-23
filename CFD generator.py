@@ -169,6 +169,13 @@ def write_to_excel(biggie):
 
 
 def write_worksheets(sheet, biggie, day):
+	"""
+    This function fills a specific sheet with the appropriate information
+	from the finished list
+	:param sheet: the sheet to be worked on
+	:param biggie: the finished list of animals, cages, conditions and order
+	:param day: the number of test day
+	"""
 	sheet.write(0, 0, 'exp. CFD')
 	sheet.write(2, 1, 'Day: ')
 	sheet.write(2, 2, day)
@@ -190,7 +197,7 @@ def write_worksheets(sheet, biggie, day):
 	for i in smalls[day - 1]:
 		for j in i:
 			reversed_chambers.append(j[3])
-	length = len(biggie[day -1][0]) + len(biggie[day - 1][1]) + len(biggie[
+	length = len(biggie[day - 1][0]) + len(biggie[day - 1][1]) + len(biggie[
 		day - 1][2])
 	cages_a = cages[0:length]
 	cages_b = cages[length:]
@@ -217,7 +224,8 @@ def write_worksheets(sheet, biggie, day):
 		sheet.write(i + (2 * length) + 4, 2, animals_b[i])
 		sheet.write(i + (2 * length) + 4 + len(cages_b), 2, animals_b[i])
 		sheet.write(i + (2 * length) + 4, 3, chambers_b[i])
-		sheet.write(i + (2 * length) + 4 + len(cages_b), 3, reversed_chambers_b[i])
+		sheet.write(i + (2 * length) + 4 + len(cages_b), 3,
+					reversed_chambers_b[i])
 	sheet.write(len(cages_a * 2) + len(cages_b) + 4, 0, 'No shock')
 
 
