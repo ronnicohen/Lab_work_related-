@@ -4,7 +4,7 @@ them for analysis.
 """
 
 import xlrd
-wb = xlrd.open_workbook('C:\\Users\\ronni\\Desktop\\exp CFD.xls')
+wb = xlrd.open_workbook('C:\\Users\\ronni\\Desktop\\exp CFD2.xls')
 ws = wb.sheet_by_index(0)
 # A list that will contain the ordered shock phase results
 ordered_s = [[], [], [], [], [], [], [], []]
@@ -21,42 +21,28 @@ while curr_row < num_of_rows:
 	cell_v = str(ws.cell_value(curr_row, 0))
 	# Freezing time in seconds
 	cell_r = str(ws.cell_value(curr_row, 1))
-	day = int(cell_v[5]) - 1
+	day = int(cell_v[6]) - 1
 	phase = cell_v[11]
-	if phase == 's':
-		animal = [cell_v[-3] + cell_v[-2] + cell_v[-1], cell_r]
-		if len(ordered_s) == 0:
-			ordered_s[day].append(animal)
-		else:
-			location = -1
-			for i in xrange(len(ordered_s) - 1, -1, -1):
-				if int(cell_v[-3]) < int(ordered_s[i][0][0]):
-					location = i
-				elif cell_v[-3] == ordered_s[i][0][0]:
-					if cell_v[-1] < ordered_s[i][0][-1]:
-						location = i
-			if location == -1:
-				ordered_s[day].append(animal)
-			else:
-				ordered_s[day].insert(location, animal)
-	elif phase == 'n':
-		animal = [cell_v[-3] + cell_v[-2] + cell_v[-1], cell_r]
-		if len(ordered_ns) == 0:
-			ordered_ns[day].append(animal)
-		else:
-			location = -1
-			for i in xrange(len(ordered_ns) - 1, -1, -1):
-				if int(cell_v[-3]) < int(ordered_ns[i][0][0]):
-					location = i
-				elif cell_v[-3] == ordered_ns[i][0][0]:
-					if cell_v[-1] < ordered_ns[i][0][-1]:
-						location = i
-			if location == -1:
-				ordered_ns[day].append(animal)
-			else:
-				ordered_ns[day].insert(location, animal)
+	if phase == 'S':
+		current_phase = ordered_s
+	elif phase == 'N':
+		current_phase = ordered_ns
+	animal = [cell_v[-3] + cell_v[-2] + cell_v[-1], cell_r]
+	if len(current_phase[day]) == 0:
+		current_phase[day].append(animal)
 	else:
-		print 'This right here i a problem'
+		location = -1
+		for i in xrange(len(current_phase[day]) - 1, -1, -1):
+			if int(cell_v[-3]) < int(current_phase[day][i][0][0]):
+				location = i
+			elif cell_v[-3] == current_phase[day][i][0][0]:
+				if cell_v[-1] < current_phase[day][i][0][-1]:
+					location = i
+		if location == -1:
+			current_phase[day].append(animal)
+		else:
+			current_phase[day].insert(location, animal)
+
 # From here exporting to a new organized .xls
 import xlwt
 workbook = xlwt.Workbook()
@@ -78,27 +64,41 @@ for i in ordered_ns:
 		worksheet.write(curr_row, 3, j[1])
 		curr_row += 1
 # A table of the shock conditions over days
-curr_row = 3
-worksheet.write(1, 8, 'Shock condition')
-worksheet.write(curr_row, 7, 'Animal')
-worksheet.write(curr_row - 1, 8, 'Day')
+# These re the pivot point for the table, they are the coordinates for the
+# upper left corner. pr = pivot_rows, pc = pivot_columns
+pr = 3
+pc = 7
+worksheet.write(pr + 1, pc, 'Animal')
+worksheet.write(pr, pc + 1, 'Day')
+worksheet.write(pr - 1, pc, 'Shock condition')
 for i in xrange(1, len(ordered_s) + 1):
-	worksheet.write(3, i + 8, i)
-for i in xrange(curr_row, 3 + len(ordered_s[0])):
-	worksheet.write(i, 7, ordered_s[0][i - 3])
-for i in xrange(0, len(ordered_s)):
-	for j in xrange(0, len(ordered_s[0])):
-		worksheet.write(j + 4, i + 2, ordered_s[i][j][1])
-# A table of the non - shock conditions over day
-curr_row = 30
-worksheet.write(1, 8, 'Shock condition')
-worksheet.write(curr_row, 7, 'Animal')
-worksheet.write(curr_row - 1, 8, 'Day')
-for i in xrange(1, len(ordered_s) + 1):
-	worksheet.write(3, i + 8, i)
-for i in xrange(curr_row, 3 + len(ordered_s[0])):
-	worksheet.write(i, 7, ordered_s[0][i - 3])
-for i in xrange(0, len(ordered_s)):
-	for j in xrange(0, len(ordered_s[0])):
-		worksheet.write(j + 4, i + 2, ordered_s[i][j][1])
+	worksheet.write(pr + 1, pc + i + 1, i)
+step_days = 2
+step = 2
+for i in ordered_s[0]:
+	worksheet.write(pr + step, pc + 1, i[0])
+	step += 1
+for i in ordered_s:
+	step = 2
+	for j in i:
+		worksheet.write(pr + step, pc + step_days, j[1])
+		step += 1
+	step_days += 1
+pr += 35
+worksheet.write(pr + 1, pc, 'Animal')
+worksheet.write(pr, pc + 1, 'Day')
+worksheet.write(pr - 1, pc, 'Non - shock condition')
+for i in xrange(1, len(ordered_ns) + 1):
+	worksheet.write(pr + 1, pc + i + 1, i)
+step_days = 2
+step = 2
+for i in ordered_s[0]:
+	worksheet.write(pr + step, pc + 1, i[0])
+	step += 1
+for i in ordered_ns:
+	step = 2
+	for j in i:
+		worksheet.write(pr + step, pc + step_days, j[1])
+		step += 1
+	step_days += 1
 workbook.save(r"C:\\Users\\ronni\\Desktop\\exp CFD organized.xls")
