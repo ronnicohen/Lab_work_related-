@@ -3,8 +3,11 @@ This script takes an xls. file output of FreezeFrame results and organizes
 them for analysis.
 """
 
+KD = ['1-1', '1-3', '1-5', '2-2', '2-4', '3-1', '3-3', '3-5',
+													'4-2',
+				'4-4', '5-1', '5-3', '5-5', '6-2', '6-4']
 import xlrd
-wb = xlrd.open_workbook('C:\\Users\\ronni\\Desktop\\exp CFD2.xls')
+wb = xlrd.open_workbook('C:\\Users\\ronni\\Desktop\\exp CFD g.xls')
 ws = wb.sheet_by_index(0)
 # A list that will contain the ordered shock phase results
 ordered_s = [[], [], [], [], [], [], [], []]
@@ -42,9 +45,9 @@ while curr_row < num_of_rows:
 			current_phase[day].append(animal)
 		else:
 			current_phase[day].insert(location, animal)
-
 # From here exporting to a new organized .xls
 import xlwt
+
 workbook = xlwt.Workbook()
 worksheet = workbook.add_sheet('Results')
 worksheet.write(3, 1, 'Day')
@@ -68,8 +71,8 @@ for i in ordered_ns:
 # upper left corner. pr = pivot_rows, pc = pivot_columns
 pr = 3
 pc = 7
-worksheet.write(pr + 1, pc, 'Animal')
-worksheet.write(pr, pc + 1, 'Day')
+worksheet.write(pr + 1, pc + 1, 'Animal')
+worksheet.write_merge(pr, pr, pc + 2, pc + 9, 'Day')
 worksheet.write(pr - 1, pc, 'Shock condition')
 for i in xrange(1, len(ordered_s) + 1):
 	worksheet.write(pr + 1, pc + i + 1, i)
@@ -77,7 +80,15 @@ step_days = 2
 step = 2
 for i in ordered_s[0]:
 	worksheet.write(pr + step, pc + 1, i[0])
+	x = i[0]
+	if i[0] in KD:
+		worksheet.write(pr + step, pc, 'KD')
+	else:
+		worksheet.write(pr + step, pc, 'Scr')
 	step += 1
+worksheet.write(pr + step, pc, 'STDDEV:')
+worksheet.write(pr + step + 1, pc, 'SEM:')
+worksheet.write(pr + step + 2, pc, 'Mean:')
 for i in ordered_s:
 	step = 2
 	for j in i:
@@ -85,8 +96,8 @@ for i in ordered_s:
 		step += 1
 	step_days += 1
 pr += 35
-worksheet.write(pr + 1, pc, 'Animal')
-worksheet.write(pr, pc + 1, 'Day')
+worksheet.write(pr + 1, pc + 1, 'Animal')
+worksheet.write_merge(pr, pr, pc + 2, pc + 9, 'Day')
 worksheet.write(pr - 1, pc, 'Non - shock condition')
 for i in xrange(1, len(ordered_ns) + 1):
 	worksheet.write(pr + 1, pc + i + 1, i)
@@ -94,7 +105,14 @@ step_days = 2
 step = 2
 for i in ordered_s[0]:
 	worksheet.write(pr + step, pc + 1, i[0])
+	if i[0] in KD:
+		worksheet.write(pr + step, pc, 'KD')
+	else:
+		worksheet.write(pr + step, pc, 'Scr')
 	step += 1
+worksheet.write(pr + step, pc, 'STDDEV:')
+worksheet.write(pr + step + 1, pc, 'SEM:')
+worksheet.write(pr + step + 2, pc, 'Mean:')
 for i in ordered_ns:
 	step = 2
 	for j in i:
