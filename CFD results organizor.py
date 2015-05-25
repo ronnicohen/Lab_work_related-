@@ -80,7 +80,6 @@ step_days = 2
 step = 2
 for i in ordered_s[0]:
 	worksheet.write(pr + step, pc + 1, i[0])
-	x = i[0]
 	if i[0] in KD:
 		worksheet.write(pr + step, pc, 'KD')
 	else:
@@ -118,5 +117,94 @@ for i in ordered_ns:
 	for j in i:
 		worksheet.write(pr + step, pc + step_days, j[1])
 		step += 1
+	step_days += 1
+# From here separate tables for KD and Scr are constructed
+pr += 35
+worksheet.write(pr + 1, pc + 1, 'Animal')
+worksheet.write_merge(pr, pr, pc + 2, pc + 9, 'Day')
+worksheet.write(pr - 1, pc, 'Shock condition KD')
+for i in xrange(1, len(ordered_s) + 1):
+	worksheet.write(pr + 1, pc + i + 1, i)
+step_days = 2
+step = 2
+for i in ordered_s[0]:
+	if i[0] in KD:
+		worksheet.write(pr + step, pc + 1, i[0])
+		step += 1
+worksheet.write(pr + step, pc, 'STDDEV:')
+worksheet.write(pr + step + 1, pc, 'SEM:')
+worksheet.write(pr + step + 2, pc, 'Mean:')
+for i in ordered_s:
+	step = 2
+	for j in i:
+		if j[0] in KD:
+			worksheet.write(pr + step, pc + step_days, j[1])
+			step += 1
+	step_days += 1
+pr += 22
+worksheet.write(pr + 1, pc + 1, 'Animal')
+worksheet.write_merge(pr, pr, pc + 2, pc + 9, 'Day')
+worksheet.write(pr - 1, pc, 'Non - shock condition KD')
+for i in xrange(1, len(ordered_ns) + 1):
+	worksheet.write(pr + 1, pc + i + 1, i)
+step_days = 2
+step = 2
+for i in ordered_ns[0]:
+	if i[0] in KD:
+		worksheet.write(pr + step, pc + 1, i[0])
+		step += 1
+worksheet.write(pr + step, pc, 'STDDEV:')
+worksheet.write(pr + step + 1, pc, 'SEM:')
+worksheet.write(pr + step + 2, pc, 'Mean:')
+for i in ordered_ns:
+	step = 2
+	for j in i:
+		if j[0] in KD:
+			worksheet.write(pr + step, pc + step_days, j[1])
+			step += 1
+	step_days += 1
+pr += 22
+worksheet.write(pr + 1, pc + 1, 'Animal')
+worksheet.write_merge(pr, pr, pc + 2, pc + 9, 'Day')
+worksheet.write(pr - 1, pc, 'Shock condition Scr')
+for i in xrange(1, len(ordered_s) + 1):
+	worksheet.write(pr + 1, pc + i + 1, i)
+step_days = 2
+step = 2
+for i in ordered_s[0]:
+	if i[0] not in KD:
+		worksheet.write(pr + step, pc + 1, i[0])
+		step += 1
+worksheet.write(pr + step, pc, 'STDDEV:')
+worksheet.write(pr + step + 1, pc, 'SEM:')
+worksheet.write(pr + step + 2, pc, 'Mean:')
+for i in ordered_s:
+	step = 2
+	for j in i:
+		if j[0] not in KD:
+			worksheet.write(pr + step, pc + step_days, j[1])
+			step += 1
+	step_days += 1
+pr += 22
+worksheet.write(pr + 1, pc + 1, 'Animal')
+worksheet.write_merge(pr, pr, pc + 2, pc + 9, 'Day')
+worksheet.write(pr - 1, pc, 'Non - shock condition KD')
+for i in xrange(1, len(ordered_ns) + 1):
+	worksheet.write(pr + 1, pc + i + 1, i)
+step_days = 2
+step = 2
+for i in ordered_ns[0]:
+	if i[0] not in KD:
+		worksheet.write(pr + step, pc + 1, i[0])
+		step += 1
+worksheet.write(pr + step, pc, 'STDDEV:')
+worksheet.write(pr + step + 1, pc, 'SEM:')
+worksheet.write(pr + step + 2, pc, 'Mean:')
+for i in ordered_ns:
+	step = 2
+	for j in i:
+		if j[0] not in KD:
+			worksheet.write(pr + step, pc + step_days, j[1])
+			step += 1
 	step_days += 1
 workbook.save(r"C:\\Users\\ronni\\Desktop\\exp CFD organized.xls")
